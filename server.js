@@ -1,7 +1,13 @@
 const express = require('express');
 const path = require('path');
+const hbs = require('express-handlebars');
 
 const app = express();
+app.engine('.hbs', hbs());
+app.set('view engine', '.hbs');
+
+/*
+Przy uzyciu handlebars ten Middleware (który skracał nam kod dostępu do ścieżki pliku) jest zbędny ponieważ Handlebars domyślnie wyszukuje w views!
 
 app.use((req, res, next) => {
   res.show = (name) => {
@@ -9,31 +15,32 @@ app.use((req, res, next) => {
   };
   next();
 });
-
+*/
 app.use(express.static(path.join(__dirname, '/public')));
 
+// Handlebars szuka w views bo to domyślny katalog
 app.get('/', (req, res) => {
-  res.show('index.html');
-});
-
-app.get('/about', (req, res) => {
-  res.show('about.html');
-});
-
-app.get('/contact', (req, res) => {
-  res.show('contact.html');
-});
-
-app.get('/info', (req, res) => {
-  res.show('info.html');
-});
-
-app.get('/history', (req, res) => {
-  res.show('history.html');
+  res.render('index', { layout: false }); // "layout: false" wyłącza domyślną opcję...
 });
 
 app.get('/hello/:name', (req, res) => {
-  res.send(`Hello ${req.params.name}`);
+  res.render('hello', { layout: false, name: req.params.name });
+});
+
+app.get('/about', (req, res) => {
+  res.render('about', { layout: false });
+});
+
+app.get('/contact', (req, res) => {
+  res.render('contact', { layout: false });
+});
+
+app.get('/info', (req, res) => {
+  res.render('info', { layout: false });
+});
+
+app.get('/history', (req, res) => {
+  res.render('history', { layout: false });
 });
 
 app.use((req, res) => {
