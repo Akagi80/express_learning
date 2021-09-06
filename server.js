@@ -6,6 +6,8 @@ const app = express();
 app.engine('.hbs', hbs());
 app.set('view engine', '.hbs');
 
+//MIDDLEWARE:
+
 /*
 Przy uzyciu handlebars ten Middleware (który skracał nam kod dostępu do ścieżki pliku) jest zbędny ponieważ Handlebars domyślnie wyszukuje w views!
 
@@ -16,11 +18,13 @@ app.use((req, res, next) => {
   next();
 });
 */
+
 app.use(express.static(path.join(__dirname, '/public')));
+app.use(express.urlencoded({ extended: false })); // konieczny do prawidłowego przyjmowania danych przez serwer
 
 // Handlebars szuka w views bo to domyślny katalog
 app.get('/', (req, res) => {
-  res.render('index', { layout: false }); // "layout: false" wyłącza domyślną opcję...
+  res.render('index');
 });
 
 app.get('/hello/:name', (req, res) => {
@@ -28,19 +32,23 @@ app.get('/hello/:name', (req, res) => {
 });
 
 app.get('/about', (req, res) => {
-  res.render('about', { layout: false });
+  res.render('about');
 });
 
 app.get('/contact', (req, res) => {
-  res.render('contact', { layout: false });
+  res.render('contact');
 });
 
 app.get('/info', (req, res) => {
-  res.render('info', { layout: false });
+  res.render('info');
 });
 
 app.get('/history', (req, res) => {
-  res.render('history', { layout: false });
+  res.render('history');
+});
+
+app.post('/contact/send-message', (req, res) => {
+  res.json(req.body); //odpowiednik res.send, jednak służący do zwracania danych w formacie JSON, który jest konieczny, bo req.body powinien być obiektem // NIEMOŻEMY ZWRÓCIĆ ÓBIEKTY JAKO TEKSTU!!!
 });
 
 app.use((req, res) => {
